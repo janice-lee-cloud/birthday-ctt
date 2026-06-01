@@ -15,7 +15,7 @@ export default function SoundToggle() {
         toggleSound();
         playClick();
       }}
-      className="fixed bottom-6 right-24 z-[90] flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white/90 backdrop-blur-xl"
+      className="fixed bottom-6 right-20 z-[90] flex h-12 w-12 touch-manipulation items-center justify-center rounded-full border border-white/15 bg-white/8 text-white/90 backdrop-blur-xl max-md:bottom-5 max-md:right-[4.5rem]"
       whileHover={{ scale: 1.06 }}
       whileTap={{ scale: 0.95 }}
       aria-label="Toggle sound effects"

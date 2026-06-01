@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { letterContent, letterTitle } from "@/data/letter";
 
 export default function LetterExperience() {
   const [opened, setOpened] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const [typingDone, setTypingDone] = useState(false);
+  const openingRef = useRef(false);
 
   useEffect(() => {
     if (!opened) {
@@ -30,30 +31,37 @@ export default function LetterExperience() {
     return () => window.clearInterval(interval);
   }, [opened]);
 
-  const openLetter = () => {
+  const openLetter = useCallback(() => {
+    if (openingRef.current || opened) return;
+    openingRef.current = true;
     setOpened(true);
-    requestAnimationFrame(() => {
-      document.getElementById("letter-paper")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-  };
+
+    window.setTimeout(() => {
+      document.getElementById("letter-paper")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  }, [opened]);
 
   if (!opened) {
     return (
-      <div className="relative z-30 flex min-h-[100dvh] w-full items-center justify-center px-5 py-20">
+      <div className="relative z-30 flex min-h-[100dvh] w-full items-center justify-center px-5 pb-28 pt-20">
         <button
           type="button"
           onClick={openLetter}
-          className="group relative w-full max-w-md cursor-pointer border-0 bg-transparent p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-pink/50"
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            openLetter();
+          }}
+          className="touch-manipulation group relative w-full max-w-md cursor-pointer border-0 bg-transparent p-0 text-left [-webkit-tap-highlight-color:transparent]"
           aria-label="Open letter"
         >
           <div
-            className="pointer-events-none absolute -inset-6 rounded-3xl opacity-70 blur-3xl transition-opacity group-hover:opacity-100"
+            className="pointer-events-none absolute -inset-6 rounded-3xl opacity-70 blur-3xl"
             style={{
               background:
                 "radial-gradient(circle, rgba(255,182,193,0.35) 0%, transparent 70%)",
             }}
           />
-          <div className="relative rounded-xl bg-gradient-to-br from-[#f5e6d3] to-[#dcc4a8] p-2 shadow-2xl transition-transform group-active:scale-[0.98]">
+          <div className="relative rounded-xl bg-gradient-to-br from-[#f5e6d3] to-[#dcc4a8] p-2 shadow-2xl active:scale-[0.98]">
             <div className="relative aspect-[5/4] rounded-lg bg-[#faf3e8] p-8">
               <div
                 className="pointer-events-none absolute inset-x-2 top-2 h-1/2 rounded-t-lg"
@@ -62,12 +70,12 @@ export default function LetterExperience() {
                   clipPath: "polygon(0 0, 100% 0, 50% 85%)",
                 }}
               />
-              <div className="relative z-10 flex h-full flex-col items-center justify-center">
+              <div className="relative z-10 flex h-full min-h-[180px] flex-col items-center justify-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-rose-pink to-[#9f1239] shadow-lg">
                   <span className="text-2xl">❤️</span>
                 </div>
                 <p className="mt-8 font-handwriting text-xl text-[#5c4033]">{letterTitle}</p>
-                <p className="mt-4 text-sm text-[#5c4033]/60">Tap to open</p>
+                <p className="mt-4 text-sm font-medium text-[#5c4033]/70">Tap to open</p>
               </div>
             </div>
           </div>
@@ -77,14 +85,8 @@ export default function LetterExperience() {
   }
 
   return (
-    <div className="relative z-30 w-full px-5 py-20">
-      <div
-        id="letter-paper"
-        className="mx-auto w-full max-w-2xl animate-[fadeIn_0.5s_ease-out]"
-        style={{
-          animation: "fadeIn 0.5s ease-out",
-        }}
-      >
+    <div className="relative z-30 w-full px-5 pb-32 pt-20">
+      <div id="letter-paper" className="mx-auto w-full max-w-2xl" style={{ animation: "fadeIn 0.5s ease-out" }}>
         <div
           className="relative min-h-[360px] rounded-sm p-8 md:p-12"
           style={{

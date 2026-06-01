@@ -19,6 +19,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a,
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
 ::selection {
   background: rgba(244, 114, 182, 0.35);
   color: #fff;
