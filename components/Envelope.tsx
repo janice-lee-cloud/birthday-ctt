@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import SectionWrapper from "@/components/SectionWrapper";
 import { letterTitle } from "@/data/letter";
-import { assetPath } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
 
 export default function Envelope() {
@@ -64,7 +63,7 @@ export default function Envelope() {
         </motion.div>
 
         <Link
-          href={assetPath("/letter/")}
+          href="/letter/"
           onClick={() => playClick()}
           className="mt-12 inline-block"
         >
