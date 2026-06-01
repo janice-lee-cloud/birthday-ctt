@@ -8,10 +8,18 @@ function getContext(): AudioContext | null {
   return audioContext;
 }
 
+async function ensureAudioRunning(ctx: AudioContext) {
+  if (ctx.state === "suspended") {
+    await ctx.resume();
+  }
+}
+
 export function playSoftClick(enabled: boolean) {
   if (!enabled) return;
   const ctx = getContext();
   if (!ctx) return;
+
+  void ensureAudioRunning(ctx);
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -29,6 +37,8 @@ export function playSparkle(enabled: boolean) {
   if (!enabled) return;
   const ctx = getContext();
   if (!ctx) return;
+
+  void ensureAudioRunning(ctx);
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();

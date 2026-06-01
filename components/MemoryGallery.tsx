@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import SectionWrapper from "@/components/SectionWrapper";
 import { memories } from "@/data/memories";
 import { useApp } from "@/context/AppContext";
+import { assetPath } from "@/lib/utils";
 
 export default function MemoryGallery() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,14 +27,17 @@ export default function MemoryGallery() {
     }
   };
 
-  const scrollPolaroid = useCallback((dir: -1 | 1) => {
-    setActiveIndex((prev) => {
-      const next = prev + dir;
-      if (next < 0 || next >= memories.length) return prev;
-      playClick();
-      return next;
-    });
-  }, [playClick]);
+  const scrollPolaroid = useCallback(
+    (dir: -1 | 1) => {
+      setActiveIndex((prev) => {
+        const next = prev + dir;
+        if (next < 0 || next >= memories.length) return prev;
+        playClick();
+        return next;
+      });
+    },
+    [playClick],
+  );
 
   return (
     <SectionWrapper id="memory-universe">
@@ -53,7 +56,6 @@ export default function MemoryGallery() {
           Memories drifting through space — tap or swipe on mobile
         </p>
 
-        {/* Desktop scattered layout */}
         <div
           ref={containerRef}
           className="relative mx-auto mt-16 hidden h-[520px] max-w-4xl md:block"
@@ -65,7 +67,6 @@ export default function MemoryGallery() {
           ))}
         </div>
 
-        {/* Mobile carousel */}
         <div
           className="relative mt-12 md:hidden"
           onTouchStart={onTouchStart}
@@ -108,6 +109,13 @@ export default function MemoryGallery() {
   );
 }
 
+const FALLBACKS: Record<string, string[]> = {
+  ".jpg": [".JPG", ".jpeg", ".JPEG", ".png", ".PNG", ".svg"],
+  ".JPG": [".jpg", ".jpeg", ".png", ".svg"],
+  ".png": [".PNG", ".jpg", ".JPG", ".svg"],
+  ".svg": [".jpg", ".JPG", ".png"],
+};
+
 function PolaroidCard({
   memory,
   index,
@@ -118,11 +126,18 @@ function PolaroidCard({
   mobile?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
-  const [src, setSrc] = useState(memory.image);
+  const [src, setSrc] = useState(assetPath(memory.image));
+  const fallbacksRef = useRef<string[]>([]);
 
   const handleImageError = () => {
-    if (src.endsWith(".jpg") || src.endsWith(".png")) {
-      setSrc(src.replace(/\.(jpg|png)$/, ".svg"));
+    if (fallbacksRef.current.length === 0) {
+      const ext = memory.image.match(/\.[^.]+$/)?.[0] ?? "";
+      const base = memory.image.slice(0, -ext.length);
+      fallbacksRef.current = (FALLBACKS[ext] ?? [".svg"]).map((e) => assetPath(`${base}${e}`));
+    }
+    const next = fallbacksRef.current.shift();
+    if (next) {
+      setSrc(next);
       return;
     }
     setImgError(true);
@@ -163,18 +178,20 @@ function PolaroidCard({
       <div className="rounded-sm bg-white p-2 pb-10 shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_30px_rgba(244,114,182,0.15)]">
         <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-night via-rose-pink/20 to-lavender/30">
           {!imgError ? (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={src}
               alt={memory.caption}
-              fill
-              className="object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
               onError={handleImageError}
-              sizes="200px"
+              loading="lazy"
             />
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">
               <span className="text-3xl">📷</span>
-              <span className="text-xs text-white/60">Add photo to public{memory.image}</span>
+              <span className="text-xs text-white/60">
+                Add {memory.image} to public/memories/
+              </span>
             </div>
           )}
         </div>

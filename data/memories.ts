@@ -1,7 +1,7 @@
 export interface Memory {
   id: number;
   caption: string;
-  /** File in public/memories/ e.g. memory-1.jpg */
+  /** File in public/memories/ — match exact name (case matters on GitHub Pages) */
   image: string;
   rotation: number;
   x: number;
@@ -9,25 +9,11 @@ export interface Memory {
   zIndex: number;
 }
 
-/**
- * Photo guide — drop files into public/memories/ with these exact names:
- *
- * memory-1.jpg → Japan Adventure
- * memory-2.jpg → Ocean Park
- * memory-3.jpg → Michael Jackson Movie
- * memory-4.jpg → Favourite Date
- * memory-5.jpg → Favourite Selfie
- * memory-6.jpg → Travel Memory
- * memory-7.png → Cute Moment (PNG is fine)
- * memory-8.jpg → Our First Year
- *
- * JPG, PNG, or WebP all work (update extension below if needed).
- */
 export const memories: Memory[] = [
   {
     id: 1,
     caption: "Japan Adventure 🇯🇵",
-    image: "/memories/memory-1.jpg",
+    image: "/memories/memory-1.JPG",
     rotation: -8,
     x: 5,
     y: 10,
@@ -36,7 +22,7 @@ export const memories: Memory[] = [
   {
     id: 2,
     caption: "Ocean Park 🎢",
-    image: "/memories/memory-2.jpg",
+    image: "/memories/memory-2.JPG",
     rotation: 6,
     x: 55,
     y: 5,
@@ -54,7 +40,7 @@ export const memories: Memory[] = [
   {
     id: 4,
     caption: "Favourite Date",
-    image: "/memories/memory-4.jpg",
+    image: "/memories/memory-4.JPG",
     rotation: 10,
     x: 70,
     y: 28,
@@ -63,7 +49,7 @@ export const memories: Memory[] = [
   {
     id: 5,
     caption: "Favourite Selfie",
-    image: "/memories/memory-5.jpg",
+    image: "/memories/memory-5.JPG",
     rotation: -12,
     x: 12,
     y: 55,
@@ -72,7 +58,7 @@ export const memories: Memory[] = [
   {
     id: 6,
     caption: "Travel Memory",
-    image: "/memories/memory-6.jpg",
+    image: "/memories/memory-6.JPG",
     rotation: 5,
     x: 45,
     y: 62,
@@ -90,7 +76,7 @@ export const memories: Memory[] = [
   {
     id: 8,
     caption: "Our First Year",
-    image: "/memories/memory-8.jpg",
+    image: "/memories/memory-8.svg",
     rotation: 9,
     x: 25,
     y: 78,
